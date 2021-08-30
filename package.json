@@ -9,8 +9,8 @@
     "start": "cd src && ts-node bin/www --unhandled-rejections=strict"
   },
   "dependencies": {
-    "@thecurve-tv/express-utils": "git+ssh://git@github.com:thecurve-tv/express-utils#semver:^1.0",
-    "@thecurve-tv/mongo-models": "git+ssh://git@github.com:thecurve-tv/mongo-models#semver:^1.0",
+    "@thecurve-tv/express-utils": "git+https://github.com/thecurve-tv/express-utils.git#semver:^1.0",
+    "@thecurve-tv/mongo-models": "git+https://github.com/thecurve-tv/mongo-models.git#semver:^1.0",
     "auth0": "^2.34.2",
     "bson": "^4.4.0",
     "cookie-parser": "~1.4.4",
