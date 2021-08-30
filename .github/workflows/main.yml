@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      - name: Lint code ✔🕵️‍♀️
+        run: npm run lint
+  audit-packages:
+    runs-on: ubuntu-latest
+    # we want to be notified of vulnerabilities but don't want them to block development
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install NPM packages 📦
+        run: npm install
+      - name: Audit NPM packages ✔🕵️‍♀️
+        # only fails the audit if the results include a vulnerability with a level of moderate or higher
+        run: npm audit --audit-level=moderate --production &> /dev/null
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install NPM packages 📦
+        run: npm install
+      - name: Create .env 🤫
+        uses: DeveloperRic/action-create-env@v1.0.3
+        with:
+          full_text: ''
+          directory: src
+          include_env_vars: true
+        env:
+          ACTION_CREATE_ENV_PROD: ${{ secrets.PROD }}
+          ACTION_CREATE_ENV_PORT: ${{ secrets.PORT }}
+          ACTION_CREATE_ENV_AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
+          ACTION_CREATE_ENV_AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN }}
+          ACTION_CREATE_ENV_AUTH0_API_AUDIENCE: ${{ secrets.AUTH0_API_AUDIENCE }}
+          ACTION_CREATE_ENV_AUTH0_API_DOMAIN: ${{ secrets.AUTH0_API_DOMAIN }}
+          ACTION_CREATE_ENV_CLIENT_DOMAIN: ${{ secrets.CLIENT_DOMAIN }}
+          ACTION_CREATE_ENV_MONGODB_CONNECT_URI: ${{ secrets.MONGODB_CONNECT_URI }}
+      - name: Build server 🛠
+        run: npm run build
