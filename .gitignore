@@ -61,4 +61,5 @@ typings/
 .next
 
 dist/
-src/environment.ts
+build/
+build-ext/
