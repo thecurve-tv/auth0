@@ -3,11 +3,11 @@ import { environment } from './environment'
 
 const _user = environment.AUTH0_TEST_USER
 const _context = { webtask: { secrets: environment } }
-const _cb = (_err?: any, _res?: any) => { }
+const _cb = (_err?: any, _res?: any) => {}
 setTimeout(() => module.exports(_user, _context, _cb))
 
 // HOOK CODE STARTS BELOW THIS LINE
-import axios from 'axios';
+import axios from 'axios'
 
 /**
 @param {object} user - The user being created
@@ -31,12 +31,13 @@ import axios from 'axios';
 */
 module.exports = function (user: typeof _user, context: typeof _context, cb: typeof _cb) {
   // create a new account
-  type Account = { _id?: string, auth0Id: string, email: string }
+  type Account = { _id?: string; auth0Id: string; email: string }
   const accountDoc: Account = {
     auth0Id: user.id,
-    email: user.email
+    email: user.email,
   }
-  return axios.post<Account>(`${context.webtask.secrets.SERVER_URI}/accounts`, accountDoc)
+  return axios
+    .post<Account>(`${context.webtask.secrets.SERVER_URI}/accounts`, accountDoc)
     .then(res => {
       if (res.status == 201) {
         const account = res.data

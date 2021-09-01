@@ -1,7 +1,7 @@
 export const environment = {
   AUTH0_TEST_USER: {
     id: '',
-    email: ''
+    email: '',
   },
-  SERVER_URI: ''
+  SERVER_URI: '',
 }
