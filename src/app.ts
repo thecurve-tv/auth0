@@ -1,16 +1,10 @@
-import express from 'express'
-import path from 'path'
 import cookieParser from 'cookie-parser'
-import logger from 'morgan'
+import express from 'express'
 import mongoose from 'mongoose'
-
-import { environment } from './environment'
+import logger from 'morgan'
+import path from 'path'
+import { environment, security } from './environment'
 import { router as accountRouter } from './routes/accounts'
-import { router as gameRouter } from './routes/games'
-import { router as chatRouter } from './routes/chats'
-import { router as roomRouter } from './routes/rooms'
-import { enableCors } from './util/security'
-import { getGraphQLMiddleware } from './graphql/graphql'
 
 export const app = express()
 
@@ -20,26 +14,11 @@ app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 
 app.use(express.static(path.join(__dirname, 'public')))
-app.use(enableCors())
-
-export const apolloServer = getGraphQLMiddleware()
-apolloServer.applyMiddleware({
-  app,
-  path: '/graphql',
-  cors: true,
-  onHealthCheck: () =>
-    new Promise<boolean>((resolve, reject) => {
-      if (mongoose.connection.readyState === 1) resolve(true)
-      else reject()
-    })
-})
+app.use(security.enableCors())
 
 app.use('/accounts', accountRouter)
-app.use('/games', gameRouter)
-app.use('/chats', chatRouter)
-app.use('/rooms', roomRouter)
 
-app.use('*', (req, res) => {
+app.use('*', (_req, res) => {
   res.sendStatus(404)
 })
 app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {

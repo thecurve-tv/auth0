@@ -4,7 +4,7 @@
  * Module dependencies.
  */
 
-import { app, apolloServer } from '../app'
+import { app } from '../app'
 import http from 'http'
 
 /**
@@ -19,8 +19,6 @@ app.set('port', port)
  */
 
 const server = http.createServer(app)
-// Accept subscriptions over WebSocket
-apolloServer.installSubscriptionHandlers(server)
 
 /**
  * Listen on provided port, on all network interfaces.

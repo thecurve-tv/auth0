@@ -2,9 +2,8 @@
   "extends": "@tsconfig/node12/tsconfig.json",
   "compilerOptions": {
     "preserveConstEnums": true,
-    "outDir": "./dist/ext",
-    "allowJs": true,
-    "target": "es2018"
+    "outDir": "./build",
+    "allowJs": true
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "**/*.spec.ts"]
