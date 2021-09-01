@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "lint": "prettier -c .",
-    "format": "prettier --write .",
+    "lint": "prettier -u -c src/**/* ext/**/*",
+    "format": "prettier -u --write src/**/* ext/**/*",
     "build": "tsc && cp package*.json src/.env build/",
     "build-ext": "tsc -b tsconfig.ext.json",
     "start": "cd src && ts-node bin/www --unhandled-rejections=strict"
