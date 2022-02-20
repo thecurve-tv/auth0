@@ -1,9 +1,11 @@
 {
-  "extends": "@tsconfig/node12/tsconfig.json",
+  "extends": "@tsconfig/node16/tsconfig.json",
   "compilerOptions": {
     "preserveConstEnums": true,
-    "outDir": "./build",
-    "allowJs": true
+    "outDir": "build/auth0",
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "**/*.spec.ts"]
