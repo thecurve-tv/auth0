@@ -19,7 +19,7 @@ export async function onExecutePreUserRegistration(event: PreUserRegistrationEve
   try {
     const res: AxiosResponse<Account> = await axios({
       method: 'POST',
-      url: `${event.secrets.SERVER_URI}//byEmail`,
+      url: `${event.secrets.SERVER_URI}/accounts/byEmail`,
       data: {
         email: event.user.email,
       },

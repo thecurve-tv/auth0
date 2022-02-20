@@ -78,9 +78,12 @@ export class ExpressSecurity {
           issuer: [ `${environment.AUTH0_DOMAIN}/` ],
           algorithms: [ 'RS256' ],
         },
-        async (err, payload) => {
+        async (err, _payload) => {
           if (err) return reject(err)
-          if (requiredScopes) await this.verifyJwtScopes(requiredScopes, payload?.scope)
+          const payload = _payload as JwtPayload | undefined
+          if (requiredScopes) {
+            await this.verifyJwtScopes(requiredScopes, payload?.scope)
+          }
           resolve(payload)
         },
       )
