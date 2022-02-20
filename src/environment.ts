@@ -1,6 +1,6 @@
-import { ExpressSecurity } from '@thecurve-tv/express-utils/src/security'
 import dotenv from 'dotenv'
-dotenv.config()
+
+dotenv.config({ path: process.env.DOTENV_PATH || undefined })
 
 export const environment = {
   PROD: !!process.env.PROD,
@@ -9,9 +9,7 @@ export const environment = {
   AUTH0_DOMAIN: process.env.AUTH0_DOMAIN,
   AUTH0_API_AUDIENCE: process.env.AUTH0_API_AUDIENCE,
   AUTH0_API_DOMAIN: process.env.AUTH0_API_DOMAIN,
-  CLIENT_DOMAIN: process.env.CLIENT_DOMAIN,
+  CLIENT_DOMAIN: undefined,
   DEV_ACCOUNT_ID: process.env.DEV_ACCOUNT_ID,
   MONGODB_CONNECT_URI: process.env.MONGODB_CONNECT_URI,
 }
-
-export const security: ExpressSecurity = new ExpressSecurity(environment)

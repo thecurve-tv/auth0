@@ -1,10 +1,12 @@
 import cookieParser from 'cookie-parser'
 import express from 'express'
-import mongoose from 'mongoose'
 import logger from 'morgan'
 import path from 'path'
-import { environment, security } from './environment'
-import { router as accountRouter } from './routes/accounts'
+import { environment } from './environment'
+import { connectMongoDB, disconnectMongoDB } from './mongodb'
+import accountRouter from './routes/accounts'
+import { security } from './util/security'
+import { errorResponse } from './util/session'
 
 export const app = express()
 
@@ -14,23 +16,23 @@ app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 
 app.use(express.static(path.join(__dirname, 'public')))
-app.use(security.enableCors())
+app.use(security.enableCors(environment.AUTH0_DOMAIN as string))
 
 app.use('/accounts', accountRouter)
 
 app.use('*', (_req, res) => {
   res.sendStatus(404)
 })
-app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
-  console.error(err.stack)
-  res.status(500).send('Something broke!')
+app.use((err: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+  console.error(err, (<Error>err).stack)
+  errorResponse(500, 'Something broke!', res, err)
 })
 
-mongoose.set('runValidators', true)
-mongoose
-  .connect(<string>environment.MONGODB_CONNECT_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => console.log('Connected to MongoDB'))
-  .catch(err => console.error('Failed to connect to MongoDB', err))
+
+export async function onListening(): Promise<void> {
+  await connectMongoDB()
+}
+
+export async function onClose(): Promise<void> {
+  await disconnectMongoDB()
+}

@@ -1,0 +1,12 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "preserveConstEnums": true,
+    "outDir": "../build/actions",
+    "declaration": false,
+    "declarationMap": false,
+    "sourceMap": false,
+  },
+  "include": ["./**/*"],
+  "exclude": ["./environment.ts", "./types.ts"],
+}
