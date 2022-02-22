@@ -157,7 +157,7 @@ export class ExpressSecurity {
         ) {
           return callback(null, true)
         }
-        return callback(new Error('Not allowed by CORS'))
+        return callback(new Error(`Request from ${origin} blocked by cors policy`))
       },
     })
   }
