@@ -15,7 +15,8 @@
     "setup-node": "set NODE_OPTIONS=--unhandled-rejections=strict",
     "jest": "npm run setup-node && set DOTENV_PATH=.env.test&& jest",
     "test": "npm run jest",
-    "start": "npm run setup-node && ts-node src/index"
+    "start": "npm run setup-node && node .",
+    "start:dev": "npm run setup-node && ts-node src/index"
   },
   "dependencies": {
     "auth0": "^2.40.0",
