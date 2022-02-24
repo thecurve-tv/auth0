@@ -16,7 +16,12 @@ app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 
 app.use(express.static(path.join(__dirname, 'public')))
-app.use(security.enableCors(environment.AUTH0_DOMAIN as string))
+app.use(security.enableCors(true, environment.AUTH0_DOMAIN as string))
+
+if (!environment.ROUTE_PASSWORD) {
+  throw new Error('Failed to lock route "/". ROUTE_PASSWORD env variable is falsy')
+}
+app.use(security.lockRoute(Buffer.from(environment.ROUTE_PASSWORD, 'base64')))
 
 app.use('/accounts', accountRouter)
 

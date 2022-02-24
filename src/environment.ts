@@ -12,4 +12,5 @@ export const environment = {
   CLIENT_DOMAIN: undefined,
   DEV_ACCOUNT_ID: process.env.DEV_ACCOUNT_ID,
   MONGODB_CONNECT_URI: process.env.MONGODB_CONNECT_URI,
+  ROUTE_PASSWORD: process.env.ROUTE_PASSWORD,
 }

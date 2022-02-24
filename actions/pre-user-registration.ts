@@ -15,19 +15,28 @@ export async function onExecutePreUserRegistration(event: PreUserRegistrationEve
       api,
     )
   }
+  console.debug('using email', event.user.email)
   let foundAccount: boolean
   try {
+    const url = `${event.secrets.SERVER_URI}/accounts/byEmail`
+    console.debug('posting to', url)
     const res: AxiosResponse<Account> = await axios({
       method: 'POST',
-      url: `${event.secrets.SERVER_URI}/accounts/byEmail`,
+      url,
+      headers: {
+        Authorization: event.secrets.AUTH_HEADER,
+      },
       data: {
         email: event.user.email,
       },
     })
+    console.debug('Response:', res.status, res.data)
     foundAccount = res.data?.email === event.user.email
   } catch (err) {
     foundAccount = false
+    console.debug(err)
   }
+  console.debug('found account =', foundAccount)
   if (foundAccount) {
     await rejectRegistration(
       `There already exists an account with the email ${event.user.email}`,
@@ -38,6 +47,7 @@ export async function onExecutePreUserRegistration(event: PreUserRegistrationEve
 }
 
 async function rejectRegistration(reason: string, userMessage: string, api: PreUserRegistrationApi): Promise<never> {
+  console.debug('Rejecting registration:', reason, userMessage)
   await api.access.deny(reason, userMessage)
   throw new Error(reason)
 }

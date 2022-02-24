@@ -11,5 +11,6 @@ export const environment = {
     email: <string>process.env.AUTH0_USER_EMAIL,
     password: <string>process.env.AUTH0_USER_PASSWORD,
   },
+  AUTHORIZATION_HEADER: `Basic ${process.env.ROUTE_PASSWORD}`,
   TEST_SERVER_DOMAIN: `http://localhost:${process.env.PORT || '3000'}`,
 }
