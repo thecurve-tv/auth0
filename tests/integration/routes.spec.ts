@@ -27,24 +27,38 @@ describe('POST /accounts', () => {
       auth0Id: 'new-auth0-id',
       email: 'valid@email.com',
     }
-    const { data: docs, status } = await axios.post(`${environment.TEST_SERVER_DOMAIN}/accounts`, inputDoc)
+    const { data: docs, status } = await axios.post(`${environment.TEST_SERVER_DOMAIN}/accounts`, inputDoc, {
+      headers: { Authorization: environment.AUTHORIZATION_HEADER },
+    })
     expect(status).toEqual(201)
     expect(docs).toMatchObject(inputDoc)
   })
 
   it('works for existing accounts', async () => {
-    const { status } = await axios.post(`${environment.TEST_SERVER_DOMAIN}/accounts`, {
-      auth0Id: mongo.accounts[0].auth0Id,
-      email: mongo.accounts[0].email,
-    })
+    const { status } = await axios.post(
+      `${environment.TEST_SERVER_DOMAIN}/accounts`,
+      {
+        auth0Id: mongo.accounts[0].auth0Id,
+        email: mongo.accounts[0].email,
+      },
+      {
+        headers: { Authorization: environment.AUTHORIZATION_HEADER },
+      },
+    )
     expect(status).toEqual(200)
   })
 
   it('fails for invalid email', async () => {
-    await expect(() => axios.post(`${environment.TEST_SERVER_DOMAIN}/accounts`, {
-      auth0Id: mongo.accounts[0].auth0Id,
-      email: 'invalidEmail',
-    }))
+    await expect(() => axios.post(
+      `${environment.TEST_SERVER_DOMAIN}/accounts`,
+      {
+        auth0Id: mongo.accounts[0].auth0Id,
+        email: 'invalidEmail',
+      },
+      {
+        headers: { Authorization: environment.AUTHORIZATION_HEADER },
+      },
+    ))
       .rejects
       .toThrow()
   })
@@ -52,9 +66,15 @@ describe('POST /accounts', () => {
 
 describe('POST /accounts/byEmail', () => {
   it('works', async () => {
-    const { data } = await axios.post(`${environment.TEST_SERVER_DOMAIN}/accounts/byEmail`, {
-      email: mongo.accounts[0].email,
-    })
+    const { data } = await axios.post(
+      `${environment.TEST_SERVER_DOMAIN}/accounts/byEmail`,
+      {
+        email: mongo.accounts[0].email,
+      },
+      {
+        headers: { Authorization: environment.AUTHORIZATION_HEADER },
+      },
+    )
     expect(data).toMatchObject({
       auth0Id: mongo.accounts[0].auth0Id,
       email: mongo.accounts[0].email,
@@ -62,9 +82,15 @@ describe('POST /accounts/byEmail', () => {
   })
 
   it('fails for non-existent accounts', async () => {
-    await expect(() => axios.post(`${environment.TEST_SERVER_DOMAIN}/accounts`, {
-      email: 'does-not-exist@email.com',
-    }))
+    await expect(() => axios.post(
+      `${environment.TEST_SERVER_DOMAIN}/accounts`,
+      {
+        email: 'does-not-exist@email.com',
+      },
+      {
+        headers: { Authorization: environment.AUTHORIZATION_HEADER },
+      },
+    ))
       .rejects
       .toThrow()
   })

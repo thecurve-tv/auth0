@@ -12,6 +12,8 @@
     "prebuild": "rm -rf build/auth0",
     "prebuild:actions": "rm -rf build/actions",
     "postbuild": "cp app.yaml package*.json build/auth0/ && echo Build complete. You may now create a .env file in the build directory.",
+    "package": "rm -f build/auth0.tgz && npm run build && cp .env.prod build/auth0/.env && cd build/auth0 && tar -czf ../auth0.tgz * .env && echo .env.prod is copied. Package is ready at ./build/auth0.tgz",
+    "package:actions": "rm -f build/actions.tgz && npm run build:actions && cp .env.prod build/actions/.env && cd build/actions && tar -czf ../actions.tgz * .env",
     "setup-node": "set NODE_OPTIONS=--unhandled-rejections=strict",
     "jest": "npm run setup-node && set DOTENV_PATH=.env.test&& jest",
     "test": "npm run jest",
@@ -21,6 +23,7 @@
   "dependencies": {
     "auth0": "^2.40.0",
     "axios": "^0.21.4",
+    "bcryptjs": "^2.4.3",
     "bson": "^4.6.1",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
@@ -36,6 +39,7 @@
   "devDependencies": {
     "@tsconfig/node16": "^1.0.2",
     "@types/auth0": "^2.34.13",
+    "@types/bcryptjs": "^2.4.2",
     "@types/cookie-parser": "^1.4.2",
     "@types/cors": "^2.8.10",
     "@types/express": "^4.17.11",

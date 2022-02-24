@@ -1,3 +1,4 @@
+import bcrypt from 'bcryptjs'
 import cors from 'cors'
 import { Request, RequestHandler } from 'express'
 import jwksRsa, { CertSigningKey, JwksClient, RsaSigningKey } from 'jwks-rsa'
@@ -143,9 +144,8 @@ export class ExpressSecurity {
     return handlers
   }
 
-  enableCors(..._allowedOrigins: string[]) {
+  enableCors(allowAnonymous = !environment.PROD, ..._allowedOrigins: string[]) {
     const allowedOrigins = new Set(_allowedOrigins)
-    const allowAnonymous = !environment.PROD
     if (environment.CLIENT_DOMAIN) {
       allowedOrigins.add(environment.CLIENT_DOMAIN)
     }
@@ -160,6 +160,28 @@ export class ExpressSecurity {
         return callback(new Error(`Request from ${origin} blocked by cors policy`))
       },
     })
+  }
+
+  lockRoute(passwordBytes: Buffer): RequestHandler {
+    const base64Password = passwordBytes.toString('base64')
+    const hash = bcrypt.hashSync(base64Password)
+    return (req, res, next) => {
+      const ret = new Promise<boolean>(resolve => {
+        if (req.headers.authorization == null) {
+          throw new Error(`Failed to authenticate access to path "${req.path}". Authorization header is not present`)
+        }
+        const base64Auth = req.headers.authorization.split(' ')[1] // Authorization: 'Basic <auth>'
+        const passwordIsCorrect = bcrypt.compareSync(base64Auth, hash)
+        resolve(passwordIsCorrect)
+      })
+      ret
+        .then(passwordIsCorrect => {
+          if (passwordIsCorrect) return next()
+          console.info(`Request to path "${req.path}" blocked due to incorrect password.`)
+          res.sendStatus(401)
+        })
+        .catch(next)
+    }
   }
 }
 

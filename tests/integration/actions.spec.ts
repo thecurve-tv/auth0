@@ -27,7 +27,10 @@ describe('PreUserRegistration', () => {
   function callPreUserRegistrationAction(email: string) {
     return onExecutePreUserRegistration(
       <unknown>{
-        secrets: { SERVER_URI: environment.TEST_SERVER_DOMAIN },
+        secrets: {
+          SERVER_URI: environment.TEST_SERVER_DOMAIN,
+          AUTH_HEADER: environment.AUTHORIZATION_HEADER,
+        },
         user: { email },
       } as PreUserRegistrationEvent,
       <unknown>{
@@ -55,7 +58,10 @@ describe('PostUserRegistration', () => {
   it('works', async () => {
     await onExecutePostUserRegistration(
       <unknown>{
-        secrets: { SERVER_URI: environment.TEST_SERVER_DOMAIN },
+        secrets: {
+          SERVER_URI: environment.TEST_SERVER_DOMAIN,
+          AUTH_HEADER: environment.AUTHORIZATION_HEADER,
+        },
         user: {
           user_id: mongo.accounts[0].auth0Id,
           email: mongo.accounts[0].email,
